@@ -105,8 +105,8 @@ app.get('/api/download/:filename', async (req, res) => {
     }
 });
 
-// SPA Fallback: ALL rotaları Express 5 uyumlu (.*) ile karşıla
-app.get('(.*)', (req, res) => {
+// SPA Fallback: Tüm diğer talepleri (API olmayanları) frontend'e yönlendir
+app.use((req, res) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/healthz')) return;
     res.sendFile(path.join(distPath, 'index.html'));
 });
