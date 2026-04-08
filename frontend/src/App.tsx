@@ -9,7 +9,7 @@ function App() {
   const [fileName, setFileName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const API_BASE_URL = window.location.origin.includes('localhost:5174') 
+  const API_BASE_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:3000' 
     : window.location.origin;
 
