@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DWG Converter Pro | Ücretsiz PDF'den DWG'ye Dönüştürücü</title>
+    <meta name="description" content="PDF dosyalarınızı saniyeler içinde yüksek kaliteli DWG formatına dönüştürün. Ücretsiz, hızlı ve güvenli Online CAD çevirici.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #EF4444; /* PDF Agile Red */
+            --primary-hover: #DC2626;
+            --bg-dark: #080808;
+            --bg-card: #121212;
+            --text-main: #F5F5F5;
+            --text-muted: #A0A0A0;
+            --accent: #3B82F6;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(8, 8, 8, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .btn-cta-small {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            background: linear-gradient(rgba(8, 8, 8, 0.7), rgba(8, 8, 8, 0.9)), url('dwg_converter_hero_bg.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        /* Upload Area */
+        .upload-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--glass);
+            border: 2px dashed var(--border);
+            border-radius: 20px;
+            padding: 3rem;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-container:hover {
+            border-color: var(--primary);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .upload-container h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-container p {
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn-upload {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-upload:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Progress State */
+        .status-container {
+            display: none;
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #222;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 8rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .feature-card-icon {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 5%;
+            background: #050505;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-logo {
+            margin-bottom: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: 0.8s all ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            DWG <span>Converter Pro</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#features">Özellikler</a></li>
+            <li><a href="#how">Nasıl Çalışır</a></li>
+            <li><a href="#faq">SSS</a></li>
+        </ul>
+        <a href="#convert" class="btn-cta-small">Hemen Başla</a>
+    </nav>
+
+    <section class="hero" id="convert">
+        <h1>PDF Dosyalarınızı <span style="color:var(--primary)">Hassas DWG</span>'ye Dönüştürün</h1>
+        <p>Mimari planlar, mühendislik çizimleri ve teknik dokümanlar için en yüksek doğruluk oranına sahip Online çevirici.</p>
+        
+        <div class="upload-container" id="drop-zone">
+            <span class="upload-icon">📄</span>
+            <h3>PDF Dosyasını Buraya Sürükleyin</h3>
+            <p>Veya bilgisayarınızdan seçmek için tıklayın</p>
+            <input type="file" id="file-input" class="file-input" accept=".pdf">
+            <button class="btn-upload" onclick="document.getElementById('file-input').click()">Dosya Seç</button>
+        </div>
+
+        <div class="status-container" id="status-box">
+            <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
+                <span id="status-text">Dosya yükleniyor...</span>
+                <span id="percent-text">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p id="file-name" style="font-size: 0.8rem; color: var(--text-muted);"></p>
+        </div>
+
+        <div id="result-box" style="display:none; margin-top: 2rem;">
+            <a href="#" id="download-link" class="btn-upload" style="background:#10B981; text-decoration: none;">✅ DWG Dosyasını İndir</a>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="feature-card reveal">
+            <span class="feature-card-icon">⚡</span>
+            <h3>Süper Hızlı</h3>
+            <p>Cloud tabanlı motorumuz sayesinde en karmaşık çizimler bile saniyeler içinde dönüşür.</p>
+        </div>
+        <div class="feature-card reveal">
+            <span class="feature-card-icon">🎯</span>
+            <h3>Yüksek Hassasiyet</h3>
+            <p>Vektörel verileri kaybetmeden, katmanları ve fontları koruyarak kusursuz DWG üretiriz.</p>
+        </div>
+        <div class="feature-card reveal">
+            <span class="feature-card-icon">🔒</span>
+            <h3>%100 Güvenli</h3>
+            <p>Dosyalarınız uçtan uca şifrelenir ve işlem tamamlandıktan sonra sunucularımızdan kalıcı olarak silinir.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo footer-logo">
+            DWG <span>Converter Pro</span>
+        </div>
+        <div class="footer-links">
+            <a href="#">Kullanım Şartları</a>
+            <a href="#">Gizlilik Politikası</a>
+            <a href="#">İletişim</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.8rem;">© 2026 DWG Converter Pro. Tüm hakları saklıdır.</p>
+    </footer>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const statusBox = document.getElementById('status-box');
+        const resultBox = document.getElementById('result-box');
+        const progressFill = document.getElementById('progress-fill');
+        const statusText = document.getElementById('status-text');
+        const percentText = document.getElementById('percent-text');
+        const fileNameText = document.getElementById('file-name');
+        const downloadLink = document.getElementById('download-link');
+
+        // WEBHOOK URL - Yerelde çalışıyorsa local backend'i, değilse n8n'i kullanır
+        const N8N_WEBHOOK_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000/api/convert' 
+            : 'https://n8n-production-aed6.up.railway.app/webhook/FAEXezwubaXrsWZ6/post/convert-pdf-to-dwg';
+
+        // Drag & Drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'var(--primary)';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = 'var(--border)';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleFile(files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+
+        function handleFile(file) {
+            if (file.type !== 'application/pdf') {
+                alert('Lütfen sadece PDF dosyası yükleyin.');
+                return;
+            }
+
+            dropZone.style.display = 'none';
+            statusBox.style.display = 'block';
+            fileNameText.textContent = file.name;
+
+            // Simule edilmiş yükleme (Backend yoksa)
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    startConversion(file);
+                }
+                updateProgress(progress, 'Dosya sunucuya yükleniyor...');
+            }, 200);
+        }
+
+        function updateProgress(percent, text) {
+            progressFill.style.width = percent + '%';
+            percentText.textContent = Math.round(percent) + '%';
+            statusText.textContent = text;
+        }
+
+        function startConversion(file) {
+            updateProgress(100, 'Dönüştürülüyor... (CAD Motoru Çalışıyor)');
+            
+            // Eğer n8n URL'si hazırsa gerçek çağrı yap
+            if (N8N_WEBHOOK_URL !== 'YOUR_N8N_WEBHOOK_URL_HERE') {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.download_url) {
+                        showResult(data.download_url);
+                    } else {
+                        alert('Dönüştürme sırasında bir hata oluştu.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Sunucu bağlantı hatası.');
+                });
+            } else {
+                // Sadece demo amaçlı 3 saniye bekle ve sonucu göster
+                setTimeout(() => {
+                    showResult('#');
+                }, 3000);
+            }
+        }
+
+        function showResult(url) {
+            statusBox.style.display = 'none';
+            resultBox.style.display = 'block';
+            downloadLink.href = url;
+        }
+
+        // Reveal Animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Init
+    </script>
+</body>
+</html>

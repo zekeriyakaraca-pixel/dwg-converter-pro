@@ -1,0 +1,132 @@
+{
+  "name": "DWG-Converter-Pro-Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "convert-pdf-to-dwg",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "id": "e6f8f5e1-8f5e-4f5e-8f5e-f5e18f5e4f5e"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "fileContent": "={{$node[\"Webhook\"].binary.file}}"
+      },
+      "name": "CloudConvert Upload",
+      "type": "@cloudconvert/n8n-nodes-cloudconvert.cloudConvert",
+      "typeVersion": 1,
+      "position": [500, 300],
+      "credentials": {
+        "cloudConvertApi": {
+          "id": "[CLOUCCONVERT_CREDENTIAL_ID]",
+          "name": "CloudConvert account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "convert",
+        "inputFormat": "pdf",
+        "outputFormat": "dwg",
+        "options": {
+          "engine": "teigha"
+        }
+      },
+      "name": "CloudConvert Convert",
+      "type": "@cloudconvert/n8n-nodes-cloudconvert.cloudConvert",
+      "typeVersion": 1,
+      "position": [750, 300],
+      "credentials": {
+        "cloudConvertApi": {
+          "id": "[CLOUCCONVERT_CREDENTIAL_ID]",
+          "name": "CloudConvert account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.cloudconvert.com/v2/jobs",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer [YOUR_API_KEY]"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "tasks",
+              "value": "={{JSON.stringify({ \"import-my-file\": { \"operation\": \"import/upload\" }, \"convert-my-file\": { \"operation\": \"convert\", \"input\": \"import-my-file\", \"output_format\": \"dwg\" }, \"export-my-file\": { \"operation\": \"export/url\", \"input\": \"convert-my-file\" } })}}"
+            }
+          ]
+        }
+      },
+      "name": "Manual API Call (Alt)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1000, 450],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "parameters": {
+        "options": {
+          "responseBody": "={\n  \"status\": \"success\",\n  \"download_url\": \"{{$node[\"CloudConvert Convert\"].data[\"result\"][\"files\"][0][\"url\"]}}\"\n}"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "CloudConvert Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CloudConvert Upload": {
+      "main": [
+        [
+          {
+            "node": "CloudConvert Convert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CloudConvert Convert": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
