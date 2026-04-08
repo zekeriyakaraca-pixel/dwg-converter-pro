@@ -21,6 +21,9 @@ const distPath = path.resolve(__dirname, '../../frontend/dist');
 // Serve static files
 app.use(express.static(distPath));
 
+// Health Check (Render vb. servisler için)
+app.get('/healthz', (req, res) => res.status(200).send('ok'));
+
 // Set up Multer for file uploads
 const upload = multer({ dest: 'uploads/' });
 
