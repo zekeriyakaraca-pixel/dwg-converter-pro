@@ -9,7 +9,9 @@ function App() {
   const [fileName, setFileName] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const API_BASE_URL = 'http://localhost:3000';
+  const API_BASE_URL = window.location.origin.includes('localhost:5174') 
+    ? 'http://localhost:3000' 
+    : window.location.origin;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
