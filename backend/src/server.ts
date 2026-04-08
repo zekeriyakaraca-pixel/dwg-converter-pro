@@ -14,8 +14,11 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+import { fileURLToPath } from 'url';
+
 // Frontend static files (Serve from 'dist' in production)
-const __dirname = path.dirname(new URL(import.meta.url).pathname).substring(1); 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const distPath = path.resolve(__dirname, '../../frontend/dist');
 
 // Serve static files
