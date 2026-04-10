@@ -26,6 +26,7 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 backend/dist/
 frontend/dist/
+converted_files/
 
 # IDE files
 .vscode/

@@ -77,13 +77,20 @@ app.post('/api/convert', upload.single('file'), async (req, res) => {
     const stats = await fs.stat(outputPath);
     if (stats.size === 0) throw new Error('Boş dosya oluştu.');
 
-    console.log(`Dönüştürme başarılı: ${outputPath}`);
+    // Yerel kullanım için kalıcı klasöre kopyala
+    const permanentDir = path.resolve(__dirname, '../../converted_files');
+    await fs.mkdir(permanentDir, { recursive: true });
+    const permanentPath = path.join(permanentDir, file.originalname.replace('.pdf', '.dxf'));
+    await fs.copyFile(outputPath, permanentPath);
+
+    console.log(`Dönüştürme başarılı ve kaydedildi: ${permanentPath}`);
 
     res.json({
         success: true,
         message: 'Başarıyla tamamlandı.',
         download_url: `/api/download/${path.basename(outputPath)}`,
-        originalName: file.originalname.replace('.pdf', '.dxf')
+        originalName: file.originalname.replace('.pdf', '.dxf'),
+        permanentPath: permanentPath // Bilgi amaçlı ekledik
     });
 
   } catch (error) {

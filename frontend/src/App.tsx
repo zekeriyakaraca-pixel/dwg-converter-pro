@@ -7,6 +7,7 @@ function App() {
   const [statusText, setStatusText] = useState('');
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState('');
+  const [localPath, setLocalPath] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const API_BASE_URL = window.location.hostname === 'localhost'
@@ -62,6 +63,7 @@ function App() {
       
       setTimeout(() => {
           setResultUrl(`${API_BASE_URL}${data.download_url}`);
+          setLocalPath(data.permanentPath);
           setIsUploading(false);
       }, 1000);
 
@@ -156,6 +158,12 @@ function App() {
                  <span style={{fontSize: '3rem'}}>✅</span>
                  <h3>Hazır!</h3>
                  <p>{fileName} başarıyla dönüştürüldü.</p>
+                 {localPath && (
+                   <div style={{marginTop: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)'}}>
+                     <p style={{fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem'}}>Bilgisayarınızdaki Kayıt Yeri:</p>
+                     <code style={{fontSize: '0.75rem', wordBreak: 'break-all', color: 'var(--primary)'}}>{localPath}</code>
+                   </div>
+                 )}
               </div>
 
               <button onClick={handleDownload} className="btn-download">
@@ -164,7 +172,7 @@ function App() {
 
               <div style={{marginTop: '2rem'}}>
                   <button 
-                    onClick={() => {setResultUrl(null); setProgress(0);}}
+                    onClick={() => {setResultUrl(null); setLocalPath(null); setProgress(0);}}
                     style={{background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', textDecoration: 'underline'}}
                   >
                     Başka bir dosya yükle
